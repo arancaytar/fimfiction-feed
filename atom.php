@@ -38,8 +38,15 @@ $id = $_GET['story'];
 $limit = !empty($_GET['limit']) ? $_GET['limit'] : 20;
 
 $url = "https://www.fimfiction.net/api/story.php?story=$id";
-$story = json_decode(file_get_contents($url))->story;
+$data = json_decode(file_get_contents($url));
 
+if (!empty($data->error)) {
+  header("HTTP/1.1 400 Bad Request", 400);
+  header("Content-type: text/plain");
+  die("Server returned error: {$data->error}");
+}
+
+$story = $data->story;
 $chapters = min($limit, $story->chapter_count);
 
 header("Content-type: application/atom+xml");
