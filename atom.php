@@ -1,19 +1,37 @@
 <?php
 
-if (empty($_GET['story'])) {
-  header("HTTP/1.1 400 Bad Request", 400);
-  header("Content-type: text/plain");
-  die("No parameters.");
+if (preg_match('%^/services/fimfiction/atom/(\d+)$%', $_SERVER['REQUEST_URI'], $match)) {
+  $_GET['story'] = $match[1];
 }
+
+if (!isset($_GET['story'])) $_GET['story'] = '';
+
 if (!preg_match('/^\d+$/', $_GET['story'])) {
   if (preg_match('/story\/(\d+)/', $_GET['story'], $match)) {
     header("HTTP/1.1 302 Found", 302);
-    header("Location: https://{$_SERVER['HTTP_HOST']}{$_SERVER['PHP_SELF']}?story={$match[1]}");
+    header("Location: https://ermarian.net/services/fimfiction/atom/{$match[1]}");
     exit();
   }
-  header("HTTP/1.1 400 Bad Request", 400);
-  header("Content-type: text/plain");
-  die("Bad request: `{$_GET['story']}` should be an ID.");
+
+?>
+  <!DOCTYPE html>
+  <html>
+    <head><title>FIMFiction Story Feed</title></head>
+
+    <body>
+      <h1>FIMFiction Story Feed</h1>
+      <form method="get">
+        <input id="story" type="text" name="story" value="<?=htmlspecialchars($_GET['story'])?>" required />
+        <label for="story">Enter the story URL, or its ID.</label>
+        <button>Submit</button>
+      </form>
+<?php if ($_GET['story']) { ?>
+  <p>This is not a valid story identifier.</p>
+<?php } ?>
+    </body>
+  </html>
+<?php
+  exit();
 }
 
 $id = $_GET['story'];
