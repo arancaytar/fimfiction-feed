@@ -75,7 +75,7 @@ print('<?xml version="1.0" encoding="utf-8"?>');
   $chapter = $story->chapters[$story->chapter_count - $i - 1];
 ?>
   <entry>
-    <title><?=$chapter->title?></title>
+    <title><?=htmlspecialchars($chapter->title)?></title>
     <link href="<?=$chapter->link . ($mature ? '?view_mature=1' : '') ?>" />
     <id><?=$chapter->link?></id>
     <updated><?=date('c', $chapter->date_modified)?></updated>
