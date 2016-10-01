@@ -48,6 +48,7 @@ if (!empty($data->error)) {
 
 $story = $data->story;
 $chapters = min($limit, $story->chapter_count);
+$mature = $story->content_rating >= 2;
 
 header("Content-type: application/atom+xml");
 print('<?xml version="1.0" encoding="utf-8"?>');
@@ -75,7 +76,7 @@ print('<?xml version="1.0" encoding="utf-8"?>');
 ?>
   <entry>
     <title><?=$chapter->title?></title>
-    <link href="<?=$chapter->link?>" />
+    <link href="<?=$chapter->link . ($mature ? '?view_mature=1' : '') ?>" />
     <id><?=$chapter->link?></id>
     <updated><?=date('c', $chapter->date_modified)?></updated>
   </entry>
